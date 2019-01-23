@@ -26,3 +26,21 @@ class FetchMailServer(models.Model):
     def _compute_mail_router_route_number(self):
         for route in self:
             route.mail_router_route_number = len(route.mail_router_route_ids)
+
+    @api.multi
+    def write(self, values):
+        write = super(FetchMailServer, self).write(values)
+
+        for server in self:
+            for route in server.sudo()._search_routes():
+                route.fetchmail_server_ids = route.fetchmail_server_ids - server
+
+        return write
+
+    @api.multi
+    def _search_routes(self):
+        self.ensure_one()
+
+        return self.env['mail_router.route'].search([
+            ('fetchmail_server_ids', '=', self.id)
+        ])
