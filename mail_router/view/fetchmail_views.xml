@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_email_server_form" model="ir.ui.view">
+        <field name="name">fetchmail.server.form</field>
+        <field name="model">fetchmail.server</field>
+        <field name="inherit_id" ref="fetchmail.view_email_server_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='object_id']/.." position="replace">
+                <group string="Actions to Perform on Incoming Mails">
+                    <field name="mail_router_route_number" invisible="1"/>
+                    <field name="mail_router_route_ids"
+                           attrs="{'invisible': [('mail_router_route_number', '==', 0)]}"
+                           widget="many2many_tags"/>
+                    <field name="object_id"
+                           attrs="{'invisible': [('mail_router_route_number', '&gt;', 0)]}"/>
+                    <field name="action_id"
+                           attrs="{'invisible': [('mail_router_route_number', '&gt;', 0)]}"
+                           groups="base.group_no_one"/>
+                </group>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

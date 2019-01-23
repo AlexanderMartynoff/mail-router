@@ -7,5 +7,6 @@
     'depends': ['fetchmail'],
     'data': [
         'view/mail_router_views.xml',
+        'view/fetchmail_views.xml',
     ]
 }
