@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from logging import getLogger
 
 
-logger = getLogger(__name__)
+_logger = getLogger(__name__)
 
 
 class FetchMailServer(models.Model):
@@ -32,15 +32,15 @@ class FetchMailServer(models.Model):
         write = super(FetchMailServer, self).write(values)
 
         for server in self:
-            for route in server.sudo()._search_routes():
-                route.fetchmail_server_ids = route.fetchmail_server_ids - server
+            if server.object_id.model != 'mail_router.route':
+                for route in server.mail_router_route_ids:
+                    route.fetchmail_server_ids = route.fetchmail_server_ids - server
 
         return write
 
     @api.multi
-    def _search_routes(self):
-        self.ensure_one()
+    def enable_route_model(self):
+        self.object_id = self.env['ir.model'].sudo().search([('model', '=', 'mail_router.route')])
 
-        return self.env['mail_router.route'].search([
-            ('fetchmail_server_ids', '=', self.id)
-        ])
+    def disable_route_model(self):
+        self.object_id = None
