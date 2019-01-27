@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import re
-from odoo import models, fields, api
 from logging import getLogger
+from odoo import models, fields, api
 
 
 _logger = getLogger(__name__)
@@ -17,6 +17,7 @@ class MailRouterFieldCondition(models.Model):
         ('from', 'From'),
         ('to', 'To'),
         ('body', 'Body'),
+        ('bodyplain', 'Plain body'),
         ('date', 'Date'),
         ('subject', 'Subject'),
     ], required=True)
@@ -27,7 +28,6 @@ class MailRouterFieldCondition(models.Model):
     @api.one
     def match(self, msg_dict):
         def search(*args, **kwargs):
-            # Use closure for acces ``self``
             return re.match(*args, **kwargs) if self.strict else re.search(*args, **kwargs)
 
         if self.field in msg_dict:

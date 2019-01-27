@@ -3,9 +3,14 @@
 import re
 from logging import getLogger
 from odoo import models, fields, api
+from collections import defaultdict
+from lxml.html import document_fromstring
 
 
 _logger = getLogger(__name__)
+
+def _split_and_strip(expression):
+    return [_.strip() for _ in expression.split(',')]
 
 
 class MailRouterFieldParser(models.Model):
@@ -18,6 +23,7 @@ class MailRouterFieldParser(models.Model):
         ('from', 'From'),
         ('to', 'To'),
         ('body', 'Body'),
+        ('bodyplain', 'Plain body'),
         ('date', 'Date'),
         ('subject', 'Subject'),
     ], required=True)
@@ -26,24 +32,33 @@ class MailRouterFieldParser(models.Model):
     extraction = fields.Char(string='Extraction', required=True)
     variable = fields.Char(string='Variable', required=True)
 
-    @api.one
+    @api.multi
     def parse(self, msg_dict):
+        variables_dict = {}
 
-        def search(*args, **kwargs):
-            # Use closure for acces ``self``
-            return re.match(*args, **kwargs) if self.strict else re.search(*args, **kwargs)
+        for parser in self:
 
-        if self.field in msg_dict:
-            match = search(self.expression, msg_dict[self.field], re.M | re.S | re.U)
+            def search(*args, **kwargs):
+                return re.match(*args, **kwargs) if parser.strict else re.search(*args, **kwargs)
+            
+            if parser.field in msg_dict:
+                match = search(parser.expression, msg_dict[parser.field], re.M | re.S | re.U)
+                
+                variables = _split_and_strip(parser.variable)
+                extractions = _split_and_strip(parser.extraction)
 
-            if match:
-                try:
-                    return self.variable, match.expand(self.extraction)
-                except (IndexError, KeyError):
-                    _logger.error(
-                        u'Error during extract values from mail field ``%s`` for variable ``%s``',
-                        self.field,
-                        self.variable)
+                for position, variable in enumerate(variables):
+                    if match is None:
+                        value = None
+                    else:
+                        try:
+                            value = match.expand(extractions[position])
+                        except (re.error, IndexError):
+                            value = None
 
-        return self.variable, None
+                            _logger.error(u'Error during extract values from mail field ``%s`` for variable ``%s`` - %s',
+                                parser.field, parser.variable, str(re.error))
 
+                    variables_dict[variable] = value
+
+        return variables_dict

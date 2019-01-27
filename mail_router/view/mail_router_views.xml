@@ -8,30 +8,28 @@
                 <form string="Mail parser">
                     <field name="model" invisible="1"/>
                     <sheet>
-                        <group>
+                        <group col="2">
                             <group>
                                 <field name="model_id" />
+                                <field name="fetchmail_server_ids" widget="many2many_tags"/>                                
                             </group>
 
                             <group>
                                 <field name="active" />
                             </group>
 
-                            <group>
-                                <field name="fetchmail_server_ids" widget="many2many_tags"/>
-                            </group>
-                            
-                            <group>
-                                <field name="cleanup_html"/>
-                            </group>
-
-                            <group>
-                                <field name="mail_router_snippet_id"/>
-                            </group>
-
                         </group>
 
-                        <group>
+                        <group col="2">
+                            <group>
+                                <field name="before_mail_router_snippet_id"/>
+                            </group>
+                            <group>
+                                <field name="after_mail_router_snippet_id"/>
+                            </group>
+                        </group>
+
+                        <group col="2">
                             <field name="mode"/>
                             <field name="field_condition_ids" widget="one2many_list">
                                 <tree editable="bottom" string="Field condition">
@@ -43,7 +41,7 @@
                             </field>
                         </group>
 
-                        <group>
+                        <group col="2">
                             <field name="field_parser_ids" widget="one2many_list">
                                 <tree editable="bottom" string="Field parsers">
                                     <field name="field" />
@@ -55,7 +53,7 @@
                             </field>
                         </group>
 
-                        <group>
+                        <group col="2">
                             <field name="field_mapper_ids" widget="one2many_list" context="{'model': model}">
                                 <tree string="Field mappers">
                                     <field name="field"/>
@@ -92,6 +90,7 @@
             <field name="model">mail_router.route</field>
             <field name="arch" type="xml">
                 <tree string="Routes">
+                    <field name="sequence" widget="handle"/>
                     <field name="model_id" />
                     <field name="active" />
                 </tree>

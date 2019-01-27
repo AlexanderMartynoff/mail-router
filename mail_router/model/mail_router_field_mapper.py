@@ -25,12 +25,25 @@ class MailRouterFieldMapper(models.Model):
             if field_mapper.template:
                 field_mapper.variables = ', '.join(_var_pattern.findall(field_mapper.template))
 
-    @api.one
-    def evaluation(self, varialbes):
-        try:
-            return self.field.name, self.template.format(**varialbes)
-        except (IndexError, KeyError) as error:
-            _logger.error(u'Error during extract values from field ``%s`` for index/name ``%s``',
-                self.field.name, str(error))
+                if not field_mapper.variables:
+                    field_mapper.variables = field_mapper.template[:10]
 
-        return self.field.name, self.default
+                    if len(field_mapper.template) > 10:
+                        field_mapper.variables += '...'
+
+    @api.multi
+    def map(self, varialbes):
+        fields_dict = {}
+
+        for mapper in self:
+            try:
+                value = mapper.template.format(**varialbes)
+            except (IndexError, KeyError) as error:
+                value = mapper.default
+
+                _logger.error(u'Error during extract values from field ``%s`` for index/name ``%s``',
+                    mapper.field.name, str(error))
+
+            fields_dict[mapper.field.name] = value
+
+        return fields_dict
