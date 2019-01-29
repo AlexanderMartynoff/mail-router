@@ -8,5 +8,6 @@
     'data': [
         'view/mail_router_views.xml',
         'view/fetchmail_views.xml',
+        'security/ir.model.access.csv',
     ]
 }

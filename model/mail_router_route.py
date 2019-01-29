@@ -47,17 +47,13 @@ class MailRouterRoute(models.Model):
     after_mail_router_snippet_item_ids = fields.One2many(
         'mail_router.snippet_item', 'after_route_id', string='After code snipets')
 
-    @api.one
+    @api.multi
     def write(self, values):
         write = super(MailRouterRoute, self).write(values)
 
-        for server in self.env['fetchmail.server'].sudo().search([]):
-
-            if server in self.search([]).mapped('fetchmail_server_ids'):
-                if server.object_id.model != 'mail_router.route':
-                    server.enable_route_model()
-            elif server.object_id.model == 'mail_router.route':
-                server.disable_route_model()
+        for route in self:
+            for server in route.fetchmail_server_ids:
+                server.enable_route_model()
 
         return write
 
@@ -80,7 +76,7 @@ class MailRouterRoute(models.Model):
                         _logger.exception(error)
                     else:
                         if record:
-                            _logger.info('Success created record ``%s`` from route ``%s``',
+                            _logger.info('Successfully created record ``%s`` from route ``%s``',
                                 record, route)
                             break
 
@@ -171,7 +167,7 @@ class MailRouterRoute(models.Model):
     @api.multi
     def _evaluate_record_dict(self, values):
         """
-        Apply type cast for raw values to odoo field types
+        Apply type cast and evaluating for raw variables
 
         :type values: dict
         :description: 

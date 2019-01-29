@@ -36,7 +36,7 @@ class FetchMailServer(models.Model):
         for server in self:
             if server.object_id.model != 'mail_router.route':
                 for route in server.mail_router_route_ids:
-                    route.fetchmail_server_ids = route.fetchmail_server_ids - server
+                    route.fetchmail_server_ids = route.fetchmail_server_ids - self
 
         return write
 
@@ -45,4 +45,5 @@ class FetchMailServer(models.Model):
         self.object_id = self.env['ir.model'].sudo().search([('model', '=', 'mail_router.route')])
 
     def disable_route_model(self):
+        _logger.info('4 - disable_route_model')
         self.object_id = None

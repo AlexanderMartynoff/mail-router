@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+mail_router_field_condition,Access for mail_router.field_condition,model_mail_router_field_condition,base.group_system,1,1,1,1
+mail_router_field_mapper,Access for mail_router.field_mapper,model_mail_router_field_mapper,base.group_system,1,1,1,1
+mail_router_field_parser,Access for mail_router.field_parser,model_mail_router_field_parser,base.group_system,1,1,1,1
+mail_router_route,Access for mail_router.route,model_mail_router_route,base.group_system,1,1,1,1
+mail_router_snippet,Access for mail_router.snippet,model_mail_router_snippet,base.group_system,1,1,1,1
+mail_router_snippet_item,Access for mail_router.snippet_item,model_mail_router_snippet_item,base.group_system,1,1,1,1
