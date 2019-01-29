@@ -2,17 +2,26 @@
 
 from logging import getLogger
 from lxml.html import document_fromstring
+import psycopg2
+from re import sub
 from odoo import models, fields, api
-from copy import deepcopy
+from odoo.tools.safe_eval import safe_eval
 
 _logger = getLogger(__name__)
 
 
+def _cleanup_text(value):
+    for pattern, replace in ('\n\s*', '\n'), (' +', ' '):
+        value = sub(pattern, replace, value)
+
+    return value
+
 class MailRouterRoute(models.Model):
     _name = 'mail_router.route'
-    _order = 'sequence asc'
+    _order = 'sequence, id asc'
+    _description = 'Extended mail message routing'
 
-    name = fields.Char(string='Name', related='model_id.display_name')
+    name = fields.Char(string='Name')
     active = fields.Boolean(string='Active', default=True)
     model_id = fields.Many2one('ir.model', string='Model', required=True)
     model = fields.Char(string='Model', related='model_id.model')
@@ -25,6 +34,7 @@ class MailRouterRoute(models.Model):
         ('fallback', 'Fallback'),
     ], default='all')
     sequence = fields.Integer(string="Sequence")
+    priority = fields.Integer(string="Priority", related='sequence')
     fetchmail_server_ids = fields.Many2many(
         'fetchmail.server',
         'mail_router_route_fetchmail_server_rel',
@@ -32,18 +42,21 @@ class MailRouterRoute(models.Model):
         'fetchmail_server_id',
         string='Mail servers',
     )
-
-    before_mail_router_snippet_id = fields.Many2one('mail_router.snippet',string='Before code snipet',)
-    after_mail_router_snippet_id = fields.Many2one('mail_router.snippet',string='After code snipet',)
+    before_mail_router_snippet_item_ids = fields.One2many(
+        'mail_router.snippet_item', 'before_route_id', string='Before code snipets')
+    after_mail_router_snippet_item_ids = fields.One2many(
+        'mail_router.snippet_item', 'after_route_id', string='After code snipets')
 
     @api.one
     def write(self, values):
         write = super(MailRouterRoute, self).write(values)
 
         for server in self.env['fetchmail.server'].sudo().search([]):
+
             if server in self.search([]).mapped('fetchmail_server_ids'):
-                server.enable_route_model()
-            else:
+                if server.object_id.model != 'mail_router.route':
+                    server.enable_route_model()
+            elif server.object_id.model == 'mail_router.route':
                 server.disable_route_model()
 
         return write
@@ -55,18 +68,21 @@ class MailRouterRoute(models.Model):
             .browse(self._context.get('fetchmail_server_id', 0))
 
         if fetchmail_server_id.exists():
-            for route in fetchmail_server_id.mail_router_route_ids.sorted(key=lambda _: _.sequence):
+            for route in fetchmail_server_id.mail_router_route_ids.sorted():
 
                 if route.active:
                     try:
-                        # Make copy
-                        record = route._routing({_1: _2 for _1, _2 in msg_dict.items()})
+                        record = route._routing({key: value for key, value in msg_dict.items()})
                     except Exception as error:
+                        if isinstance(error, psycopg2.IntegrityError):
+                            self.env.cr.rollback()
+
                         _logger.exception(error)
                     else:
                         if record:
                             _logger.info('Success created record ``%s`` from route ``%s``',
                                 record, route)
+                            break
 
     @api.multi
     def _routing(self, msg_dict):
@@ -77,33 +93,33 @@ class MailRouterRoute(models.Model):
         self.ensure_one()
 
         if 'body' in msg_dict.keys():
-            msg_dict.update(bodyplain=document_fromstring(msg_dict['body']).text_content())
+            msg_dict.update(bodyplain=_cleanup_text(
+                document_fromstring(msg_dict['body']).text_content()))
         
         # 1. Check conditions
         if self._check_conditions(msg_dict):
+
             # 2. Extract variables from message
             variables = self._extract_variables(msg_dict)
             # 3. Extract mapping form variables
             values = self._extract_values(variables)
             # 4. Resolve values for create method
-            record_dict = self._resolve_record_dict(values)
+            record_dict = self._evaluate_record_dict(values)
             # 5. Optional record pre-processing with snippet
-            if self.before_mail_router_snippet_id.exists():
-                self.before_mail_router_snippet_id.eval({
-                    'model': self.model,
-                    'variables': variables,
-                    'record_dict': record_dict,
-                })
+            self.before_mail_router_snippet_item_ids.eval({
+                'model_id': self.model_id,
+                'variables': variables,
+                'record_dict': record_dict,
+            })
             # 6. Create a record
             record = self.env[self.model_id.model].create(record_dict)
             # 7. Optional record post-processing with snippet
-            if self.after_mail_router_snippet_id.exists():
-                self.after_mail_router_snippet_id.eval({
-                    'model': self.model,
-                    'variables': variables,
-                    'record': record,
-                    'record_dict': record_dict,
-                })
+            self.after_mail_router_snippet_item_ids.eval({
+                'model_id': self.model_id,
+                'variables': variables,
+                'record': record,
+                'record_dict': record_dict,
+            })
 
             return record
 
@@ -116,7 +132,10 @@ class MailRouterRoute(models.Model):
 
         self.ensure_one()
 
-        # False if empty 
+        if self.mode == 'fallback':
+            return True
+
+        # False if empty
         if not self.field_condition_ids.exists():
             return False
 
@@ -150,7 +169,7 @@ class MailRouterRoute(models.Model):
         return self.field_mapper_ids.map(variables)
 
     @api.multi
-    def _resolve_record_dict(self, values):
+    def _evaluate_record_dict(self, values):
         """
         Apply type cast for raw values to odoo field types
 
@@ -166,27 +185,33 @@ class MailRouterRoute(models.Model):
         record_dict = {}
         model_fields = self.env[self.model]._fields
 
-        def to_int(_):
+        # safe_eval
+        def _safe_eval(code):
             try:
-                return int(_)
-            except (ValueError, TypeError):
-                pass
+                return safe_eval(code)
+            except Exception as error:
+                _logger.exception(error)
+
+            return None
 
         for key, value in values.items():
             if key in model_fields:
                 field = model_fields[key]
                 
-                # Special case for ``Many2one``
-                if isinstance(field, fields.Many2one):
-                    record_value = to_int(value)
+                # Special case for ``Many2one`` and  ``Many2many``
+                if isinstance(field, (fields.Many2one, fields.Many2many)):
+                    if isinstance(value, basestring):
+                        record_value = _safe_eval(value)
+                    else:
+                        record_value = value
                 # Special case for ``Datetime/Date``
-                elif isinstance(field, fields.Date) or isinstance(field, fields.Datetime):
+                elif isinstance(field, (fields.Date, fields.Datetime)):
                     record_value = None
                     _logger.error(error_text, key, u'Date/Datetime')
                 # Raise an exception for unsupported types
-                elif isinstance(field, (fields.One2many, fields.Many2many)):
+                elif isinstance(field, fields.One2many):
                     record_value = None
-                    _logger.error(error_text, key, u'One2many/Many2many')
+                    _logger.error(error_text, key, u'One2many')
                 # Fallback for others cases, left it as is
                 else:
                     record_value = value

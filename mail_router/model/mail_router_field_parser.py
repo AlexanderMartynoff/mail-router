@@ -16,7 +16,7 @@ def _split_and_strip(expression):
 class MailRouterFieldParser(models.Model):
     _name = 'mail_router.field_parser'
 
-    name = fields.Char(string='Name')
+    name = fields.Char(string='Name', related='route_id.name')
 
     route_id = fields.Many2one('mail_router.route', string='Mail route', required=True)
     field = fields.Selection(selection=[
@@ -26,7 +26,7 @@ class MailRouterFieldParser(models.Model):
         ('bodyplain', 'Plain body'),
         ('date', 'Date'),
         ('subject', 'Subject'),
-    ], required=True)
+    ], string='Field', required=True)
     strict = fields.Boolean(string='Strict', default=False)
     expression = fields.Char(string='Expression', required=True)
     extraction = fields.Char(string='Extraction', required=True)

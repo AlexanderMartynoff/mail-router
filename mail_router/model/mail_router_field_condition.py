@@ -11,7 +11,7 @@ _logger = getLogger(__name__)
 class MailRouterFieldCondition(models.Model):
     _name = 'mail_router.field_condition'
 
-    name = fields.Char(string='Name')
+    name = fields.Char(string='Name', related='route_id.name')
     expression = fields.Char(string='Expression', required=True)
     field = fields.Selection(selection=[
         ('from', 'From'),
@@ -20,7 +20,7 @@ class MailRouterFieldCondition(models.Model):
         ('bodyplain', 'Plain body'),
         ('date', 'Date'),
         ('subject', 'Subject'),
-    ], required=True)
+    ], string='Field', required=True)
     negation = fields.Boolean(string='Negation', default=False)
     strict = fields.Boolean(string='Strict', default=False)
     route_id = fields.Many2one('mail_router.route', string='Mail route')

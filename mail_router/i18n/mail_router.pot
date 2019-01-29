@@ -14,3 +14,288 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+
+#. module: mail_router
+#: model:ir.model,name:mail_router.mail_router_route
+msgid "Extended mail message routing"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_fetchmail_server_mail_router_route_ids
+msgid "Mail routes"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_fetchmail_server_model
+msgid "Model"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_condition_name
+msgid "Name"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_condition_expression
+msgid "Expression"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_condition_field
+msgid "Field"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_condition_negation
+msgid "Negation"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_condition_strict
+msgid "Strict"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_condition_route_id
+msgid "Mail route"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_mapper_name
+msgid "Name"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_mapper_route_id
+msgid "Mail route"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_mapper_field
+msgid "Model field"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_mapper_template
+msgid "Template"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_mapper_default
+msgid "Default"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_mapper_variables
+msgid "Variables"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_name
+msgid "Name"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_route_id
+msgid "Mail route"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_field
+msgid "Field"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_strict
+msgid "Strict"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_expression
+msgid "Expression"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_extraction
+msgid "Extraction"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_field_parser_variable
+msgid "Variable"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.field_parser,field:0
+#: selection:mail_router.field_condition,field:0
+msgid "From"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.field_parser,field:0
+#: selection:mail_router.field_condition,field:0
+msgid "To"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.field_parser,field:0
+#: selection:mail_router.field_condition,field:0
+msgid "Body"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.field_parser,field:0
+#: selection:mail_router.field_condition,field:0
+msgid "Plain body"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.field_parser,field:0
+#: selection:mail_router.field_condition,field:0
+msgid "Date"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.field_parser,field:0
+#: selection:mail_router.field_condition,field:0
+msgid "Subject"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_name
+msgid "Name"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_active
+msgid "Active"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_model_id
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_model
+msgid "Model"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_field_condition_ids
+msgid "Field conditions"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_field_parser_ids
+msgid "Field parsers"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_field_mapper_ids
+msgid "Field mappers"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_mode
+msgid "Mode"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.route,mode:0
+msgid "All"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.route,mode:0
+msgid "Any"
+msgstr ""
+
+#. module: mail_router
+#: selection:mail_router.route,mode:0
+msgid "Fallback"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_fetchmail_server_ids
+msgid "Mail servers"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_before_mail_router_snippet_id
+msgid "Before code snipet"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_after_mail_router_snippet_id
+msgid "After code snipet"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.ui.view,arch_db:mail_router.view_email_server_form
+msgid "Actions to Perform on Incoming Mails"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_name
+msgid "Name"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_code
+msgid "Code"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.ui.menu,name:mail_router.menu_mail_routing
+msgid "Routing"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.ui.menu,name:mail_router.menu_mail_routing_route
+#: model:ir.actions.act_window,name:mail_router.action_mail_router_route
+msgid "Route"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.ui.menu,name:mail_router.menu_mail_routing_snippet
+#: model:ir.actions.act_window,name:mail_router.action_mail_router_snippet
+msgid "Snippet"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_item_name
+msgid "Name"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_item_sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_item_before_route_id
+msgid "Mail route before"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_item_after_route_id
+msgid "Mail route after"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_before_mail_router_snippet_item_ids
+msgid "Before code snipets"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_route_after_mail_router_snippet_item_ids
+msgid "After code snipets"
+msgstr ""
+
+#. module: mail_router
+#: model:ir.model.fields,field_description:mail_router.field_mail_router_snippet_item_snippet_id
+msgid "Snippet"
+msgstr ""

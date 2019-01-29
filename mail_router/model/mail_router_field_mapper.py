@@ -11,7 +11,7 @@ _var_pattern = re.compile('{([\w_]+)}')
 class MailRouterFieldMapper(models.Model):
     _name = 'mail_router.field_mapper'
 
-    name = fields.Char(string='Name')
+    name = fields.Char(string='Name', related='field.model')
 
     route_id = fields.Many2one('mail_router.route', string='Mail route', required=True)
     field = fields.Many2one('ir.model.fields', string='Model field', required=True)
@@ -34,6 +34,8 @@ class MailRouterFieldMapper(models.Model):
     @api.multi
     def map(self, varialbes):
         fields_dict = {}
+        # remove None values
+        varialbes = {key: value for key, value in varialbes.items() if value is not None}
 
         for mapper in self:
             try:

@@ -18,6 +18,8 @@ class FetchMailServer(models.Model):
         string='Mail routes'
     )
 
+    model = fields.Char(string='Model', related='object_id.model')
+
     mail_router_route_number = fields.Integer(
         'Number mail ruoters',
         compute='_compute_mail_router_route_number')
