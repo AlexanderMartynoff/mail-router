@@ -4,6 +4,7 @@
     'name': 'Mail Router',
     'category': 'Mail',
     'version': '10.1.0.0',
+    'author': 'Alexander Martynov',
     'support': 'triplustri@mail.ru',
     'price': 10,
     'currency': 'EUR',
@@ -15,6 +16,9 @@
     ],
     'license': 'OPL-1',
     'description': """
-        Advanced email management in Odoo
+        The module allows you to configure advanced routing of mail messages
+        to create entries in the Odoo database. Features provided by the standard module "mail" to create entries may not be enough.
+        The module allows you to extract the necessary information from the letters through the flexible settings system
+        and save it in the database as model records.
     """,
 }
