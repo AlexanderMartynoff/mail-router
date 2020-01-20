@@ -2,12 +2,19 @@
 
 {
     'name': 'Mail Router',
-    'category': 'mail',
-    'version': '10.0.2018.30.09',
+    'category': 'Mail',
+    'version': '10.1.0.0',
+    'support': 'triplustri@mail.ru',
+    'price': 10,
+    'currency': 'EUR',
     'depends': ['fetchmail'],
     'data': [
         'view/mail_router_views.xml',
         'view/fetchmail_views.xml',
         'security/ir.model.access.csv',
-    ]
+    ],
+    'license': 'OPL-1',
+    'description': """
+        Advanced email management in Odoo
+    """,
 }
