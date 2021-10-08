@@ -5,7 +5,7 @@ from logging import getLogger
 import re
 
 _logger = getLogger(__name__)
-_var_pattern = re.compile('{([\w_]+)}')
+_var_pattern = re.compile(r'{([\w_]+)}')
 
 
 class MailRouterFieldMapper(models.Model):
